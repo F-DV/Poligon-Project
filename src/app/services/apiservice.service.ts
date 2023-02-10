@@ -2,22 +2,25 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpStatusCode } from '@ang
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError} from 'rxjs';
 import { containtUrl } from '../utils/containtUrl';
+import {AggregatesBar} from '../models/graphicBars.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiserviceService {
 
-  private ticker = 'BTCUSD';
-  private multiplier = 1;
-  private timeSpan = 'day';
-  private dateFrom = '2023-01-09';
-  private dateTo = '2023-01-09';
-  private adjusted = 'adjusted=true';
-  private sort = 'sort=asc';
-  private limit = 'limit=5000';
+  private bar: AggregatesBar = {
+    ticker: 'BTCUSD',
+    multiplier: 1,
+    timeSpan: 'day',
+    dateFrom:'2023-01-09',
+    dateTo:'2023-01-09',
+    adjusted:'adjusted=true',
+    sort:'sort=asc',
+    limit:'limit=5000'
+  }
 
-  private apiURL = `${containtUrl.urlBarras}/ticker/X:${this.ticker}/range/${this.multiplier}/${this.timeSpan}/${this.dateFrom}/${this.dateTo}?${this.adjusted}&${this.sort}&${this.limit}`;
+  private apiURL = `${containtUrl.urlBarras}/ticker/X:${this.bar.ticker}/range/${this.bar.multiplier}/${this.bar.timeSpan}/${this.bar.dateFrom}/${this.bar.dateTo}?${this.bar.adjusted}&${this.bar.sort}&${this.bar.limit}`;
 
   constructor(
     private http: HttpClient
