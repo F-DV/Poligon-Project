@@ -1,4 +1,4 @@
-export interface AggregatesBar { //Tipado para grafico de barras
+export interface UrlParameters { //Tipado para grafico de barras
   ticker:string;
   multiplier:number;
   timeSpan:string;
@@ -7,4 +7,16 @@ export interface AggregatesBar { //Tipado para grafico de barras
   adjusted:string;
   sort:string;
   limit:string;
+}
+
+export interface ShowData {
+  par:string;
+  closePrice:string;
+  openPrice:string;
+  hPrice:string;
+  lPrice:string;
+  NTransactions:string;
+  markTime:string;
+  volume:string;
+  averagePrice:string;
 }

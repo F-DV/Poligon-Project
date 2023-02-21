@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiserviceService } from 'src/app/services/apiservice.service';
+import { StoreService } from 'src/app/services/store.service';
 
 @Component({
   selector: 'app-bar-graphic',
@@ -18,28 +18,24 @@ export class BarGraphicComponent implements OnInit{
   volume = '';
   averagePrice = '';
 
-  constructor(private apiService: ApiserviceService){
+  constructor(
+    private _store:StoreService
+    ){
   }
 
   ngOnInit(): void {
-    this.apiService.getBars()
-    .subscribe(data => {
-      //console.log(res);
-      this.par = data.ticker;
-      this.closePrice = data.results[0].c;
-      this.openPrice = data.results[0].o;
-      this.hPrice = data.results[0].h;
-      this.lPrice = data.results[0].l;
-      this.NTransactions = data.results[0].n;
-      this.markTime = data.results[0].t;
-      this.volume = data.results[0].v;
-      this.averagePrice = data.results[0].vw;
-    },err =>{
-      alert(err);
+    this._store.getGraphicData().subscribe(data => {
+      this.par = data.par;
+      this.closePrice = data.closePrice;
+      this.openPrice = data.openPrice;
+      this.hPrice = data.hPrice;
+      this.lPrice = data.lPrice;
+      this.NTransactions = data.NTransactions;
+      this.markTime = data.markTime;
+      this.volume = data.volume ;
+      this.averagePrice = data.averagePrice;
     })
-  }
-
-
+}
 
 }
 

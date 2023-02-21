@@ -6,17 +6,24 @@ import {HttpClientModule} from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BarGraphicComponent } from './pages/bar-graphic/bar-graphic.component';
+import { NavParametersComponent } from './components/nav-parameters/nav-parameters.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TestComponentComponent } from './components/test-component/test-component.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BarGraphicComponent,
+    NavParametersComponent,
+    TestComponentComponent,
 
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent]

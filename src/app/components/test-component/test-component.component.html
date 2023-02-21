@@ -1,0 +1,38 @@
+<p>Formulario Reactivo</p>
+<br>
+<h2>FormControl</h2>
+<div>
+  <label for="">Nombre:  </label>
+  <input type="text" [formControl]="name">
+</div>
+<div>
+  <p>
+   {{this.name.value}}
+  </p>
+  <button class="btn-primary" type="button" (click)="updateName()">Update Name</button>
+</div>
+<br>
+<br>
+<h2>FormGroup</h2>
+<div>
+  <form [formGroup]="profile" (ngSubmit)="onSubmit()">
+
+    <label for="first-name">First Name: </label>
+    <input id="first-name" type="text" formControlName="firstName">
+
+    <label for="last-name">Last Name: </label>
+    <input id="last-name" type="text" formControlName="lastName">
+
+    <button type="submit" [disabled]="!profile.valid">Submit</button>
+  </form>
+
+  <h2>{{this.apellido}}</h2>
+</div>
+<br>
+<br>
+<div>
+  <h2>FormBuilder</h2>
+
+</div>
+
+

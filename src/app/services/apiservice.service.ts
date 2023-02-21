@@ -1,39 +1,64 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, throwError} from 'rxjs';
+import { catchError, throwError} from 'rxjs';
 import { containtUrl } from '../utils/containtUrl';
-import {AggregatesBar} from '../models/graphicBars.model';
+import {ShowData} from '../models/graphicBars.model';
+import { StoreService } from './store.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApiserviceService {
+export class ApiserviceService{
 
-  private bar: AggregatesBar = {
-    ticker: 'BTCUSD',
-    multiplier: 1,
-    timeSpan: 'day',
-    dateFrom:'2023-01-09',
-    dateTo:'2023-01-09',
-    adjusted:'adjusted=true',
-    sort:'sort=asc',
-    limit:'limit=5000'
-  }
-
-  private apiURL = `${containtUrl.urlBarras}/ticker/X:${this.bar.ticker}/range/${this.bar.multiplier}/${this.bar.timeSpan}/${this.bar.dateFrom}/${this.bar.dateTo}?${this.bar.adjusted}&${this.bar.sort}&${this.bar.limit}`;
+  private graphicData:ShowData = {
+    par: '',
+    closePrice: '',
+    openPrice:'',
+    hPrice:'',
+    lPrice:'',
+    NTransactions:'',
+    markTime:'',
+    volume:'',
+    averagePrice:'',
+  };
+  private apiURL:string;
 
   constructor(
-    private http: HttpClient
-  ) {}
+    private http: HttpClient,
+    private _store:StoreService
+  ) {
+    this.apiURL = `${containtUrl.urlBarras}/ticker/X:${_store.urlParameters.ticker}/range/${_store.urlParameters.multiplier}/${_store.urlParameters.timeSpan}/${_store.urlParameters.dateFrom}/${_store.urlParameters.dateTo}?$storeData.adjusted}&${_store.urlParameters.sort}&${_store.urlParameters.limit}`;
+  }
 
-  getBars(): Observable<any>{
+  getBars(){
 
-    return this.http.get<any>(this.apiURL,this.getHttpHeaders())
+    //Traemos los parametros de la URL que tiene Store
+    this._store.getUrlParameters().subscribe(storeData => {
+      this.apiURL = `${containtUrl.urlBarras}/ticker/X:${storeData.ticker}/range/${storeData.multiplier}/${storeData.timeSpan}/${storeData.dateFrom}/${storeData.dateTo}?$storeData.adjusted}&${storeData.sort}&${storeData.limit}`;
+    })
+
+    //Peticion URL, con pipe para atrapar la respuesta de la api y manejo de errores
+    this.http.get<any>(this.apiURL,this.getHttpHeaders())
     .pipe(
       catchError((err: HttpErrorResponse)=>{
         return this.handleErrors(err);
       })
-    )
+    ).subscribe(data => {
+      this.graphicData.par = data.ticker;
+      this.graphicData.closePrice = data.results[0].c;
+      this.graphicData.openPrice = data.results[0].o;
+      this.graphicData.hPrice = data.results[0].h;
+      this.graphicData.lPrice = data.results[0].l;
+      this.graphicData.NTransactions = data.results[0].n;
+      this.graphicData.markTime = data.results[0].t;
+      this.graphicData.volume = data.results[0].v;
+      this.graphicData.averagePrice = data.results[0].vw;
+
+      this._store.updateGraphic(this.graphicData); //Enviando los nuevos datos de graficacion al store
+    },err =>{
+      console.log(err);
+      alert(err);
+    })
   }
 
   //Manejo de algunos errores
@@ -49,7 +74,7 @@ export class ApiserviceService {
     }
   }
 
-  //Encabezados
+  //Encabezado para la peticion Http con el token de acceso
   getHttpHeaders(){
     const token = containtUrl.apiKey;
     return{
